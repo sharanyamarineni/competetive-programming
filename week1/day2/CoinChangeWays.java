@@ -11,7 +11,7 @@ public class CoinChangeWays {
             {
                 arr[j]=arr[j]+arr[j-denom[i]];
             }
-            System.out.println(Arrays.toString(arr));
+           
         }
         return arr[arr.length-1];
     }
