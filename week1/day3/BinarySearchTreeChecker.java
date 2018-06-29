@@ -1,30 +1,41 @@
-class BinaryTreeNode {
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
 
-    public int value;
-    public BinaryTreeNode left;
-    public BinaryTreeNode right;
+import static org.junit.Assert.*;
 
-    public BinaryTreeNode(int value) {
-        this.value = value;
+public class Solution {
+
+    public static class BinaryTreeNode {
+
+        public int value;
+        public BinaryTreeNode left;
+        public BinaryTreeNode right;
+
+        public BinaryTreeNode(int value) {
+            this.value = value;
+        }
+
+        public BinaryTreeNode insertLeft(int leftValue) {
+            this.left = new BinaryTreeNode(leftValue);
+            return this.left;
+        }
+
+        public BinaryTreeNode insertRight(int rightValue) {
+            this.right = new BinaryTreeNode(rightValue);
+            return this.right;
+        }
     }
 
-    public BinaryTreeNode insertLeft(int leftValue) {
-        this.left = new BinaryTreeNode(leftValue);
-        return this.left;
-    }
+    public static boolean isBinarySearchTree(BinaryTreeNode root,int min,int max) {
 
-    public BinaryTreeNode insertRight(int rightValue) {
-        this.right = new BinaryTreeNode(rightValue);
-        return this.right;
-    }
-}
-public class BinarySearchTreeChecker {
-    public boolean checkBST(BinaryTreeNode root,int min,int max)
-    {
-        if(root!=null)
+        // determine if the tree is a valid binary search tree
+      
+      if(root!=null)
         {
             if(root.value>min && root.value<max){
-                return checkBST(root.left,min,root.value) && checkBST(root.right,root.value,max);
+                return isBinarySearchTree(root.left,min,root.value) && isBinarySearchTree(root.right,root.value,max);
 
             }
             else{
@@ -36,16 +47,82 @@ public class BinarySearchTreeChecker {
             return true;
         }
     }
-    public static void main(String[] args) {
-        BinaryTreeNode bt = new BinaryTreeNode(50);
-        BinaryTreeNode n1 =bt.insertLeft(30);
-        BinaryTreeNode n2 = n1.insertRight(40);
-        BinaryTreeNode n3 = n1.insertLeft(20);
-        BinaryTreeNode n4 = bt.insertRight(80);
-        BinaryTreeNode n5 = n4.insertLeft(70);
-        BinaryTreeNode n7 = n4.insertRight(90);
 
-        BinarySearchTreeChecker obj = new BinarySearchTreeChecker();
-        System.out.println(obj.checkBST(bt,Integer.MIN_VALUE,Integer.MAX_VALUE));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // tests
+
+    @Test
+    public void validFullTreeTest() {
+        final BinaryTreeNode root = new BinaryTreeNode(50);
+        final BinaryTreeNode a = root.insertLeft(30);
+        a.insertLeft(10);
+        a.insertRight(40);
+        final BinaryTreeNode b = root.insertRight(70);
+        b.insertLeft(60);
+        b.insertRight(80);
+        final boolean result = isBinarySearchTree(root,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        assertTrue(result);
+    }
+
+    @Test
+    public void bothSubtreesValidTest() {
+        final BinaryTreeNode root = new BinaryTreeNode(50);
+        final BinaryTreeNode a = root.insertLeft(30);
+        a.insertLeft(20);
+        a.insertRight(60);
+        final BinaryTreeNode b = root.insertRight(80);
+        b.insertLeft(70);
+        b.insertRight(90);
+        final boolean result = isBinarySearchTree(root,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        assertFalse(result);
+    }
+
+    @Test
+    public void descendingLinkedListTest() {
+        final BinaryTreeNode root = new BinaryTreeNode(50);
+        root.insertLeft(40).insertLeft(30).insertLeft(20).insertLeft(10);
+        final boolean result = isBinarySearchTree(root,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        assertTrue(result);
+    }
+
+    @Test
+    public void outOfOrderLinkedListTest() {
+        final BinaryTreeNode root = new BinaryTreeNode(50);
+        root.insertRight(70).insertRight(60).insertRight(80);
+        final boolean result = isBinarySearchTree(root,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        assertFalse(result);
+    }
+
+    @Test
+    public void oneNodeTreeTest() {
+        final BinaryTreeNode root = new BinaryTreeNode(50);
+        final boolean result = isBinarySearchTree(root,Integer.MIN_VALUE,Integer.MAX_VALUE);
+        assertTrue(result);
+    }
+
+    public static void main(String[] args) {
+        Result result = JUnitCore.runClasses(Solution.class);
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        if (result.wasSuccessful()) {
+            System.out.println("All tests passed.");
+        }
     }
 }
